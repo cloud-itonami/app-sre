@@ -81,8 +81,11 @@ nbb docs/verify-custody.cljs --origin
 ```
 SCANNED	38 保管ファイル / 4 検査
   ok   出所 tree（再構成 vs 記録）
+         got  eb81e706783d12ada7937f8c73466b72c200813c
   ok   保管ファイル数
+         got  38
   ok   保管バイト数
+         got  66613
   ok   出所 GitHub の実 tree（etzhayyim/root@1316716c:60-apps/etzhayyim-project-sre）
          got  eb81e706783d12ada7937f8c73466b72c200813c
 PASS — 保管対象 38 ファイルは出所と同一
@@ -128,12 +131,16 @@ npm test
 **ただしこの 1 件は `expect(true).toBe(true)` である**（`extension/test/sre.test.ts`、
 154 B）。緑だが何も主張していない。
 
-ビルド（**共有 build ロックを経由すること** —— このマシンでは並行セッションが
-走っている）:
+ビルド:
 
 ```bash
-node <superproject>/scripts/resource-guard.mjs run build -- npm run build
+npm run build
 ```
+
+> com-junkawasaki のワークスペース内から回す場合は、並行セッションと競合するので
+> 共有 build ロックを経由すること —— `node <superproject>/scripts/resource-guard.mjs
+> run build -- npm run build`。単独の clone なら素の `npm run build` でよい
+> （下の出力はロック経由で取ったが、内容は同じ）。
 
 **exit 1。**
 
@@ -240,19 +247,22 @@ Error: browserType.launch: Executable doesn't exist at
 npx playwright install chromium        # 約 150 MB のダウンロード
 ```
 
-## 6. 検査が本当に落ちることを見る（30 秒）
+## 6. 検査が本当に落ちることを見る（1 分）
 
-**落ちない検査は劇場である。**保管検査が実際に差を捕まえることを一度見ておく:
+**落ちない検査は劇場である。**この検査器が実際に差を捕まえること、そして
+「測れなかった」を PASS と同じ値で返さないことを、一度自分で見ておく。
+以下 4 つはすべて実走した。
+
+### 保管対象に 1 バイト足す
 
 ```bash
-printf '\n' >> NOTICE          # 保管対象に 1 バイト足す
+printf '\n' >> NOTICE
 nbb docs/verify-custody.cljs; echo "exit=$?"
 ```
 
 ```
-  FAIL 保管ファイル数 ... ではなく:
+  ok   出所 tree（再構成 vs 記録）
   ok   保管ファイル数
-         got  38
   FAIL 保管バイト数
          got  66614
          want 66613
@@ -260,15 +270,74 @@ FAIL — 保管対象が出所と一致しない
 exit=1
 ```
 
-戻す:
+tree が `ok` のままなのは仕様である —— **tree の検査は HEAD を、バイト数の検査は
+working tree を見る。**未 commit の改変はバイト数側で捕まる。
 
 ```bash
-git checkout -- NOTICE
-nbb docs/verify-custody.cljs; echo "exit=$?"      # exit=0
+git checkout -- NOTICE      # 戻すと exit=0
 ```
 
-`tree` の検査は HEAD を、バイト数の検査は working tree を見る。したがって
-**未 commit の改変はバイト数側で捕まる**。これは仕様である。
+### 保管対象を 1 件消して commit する
+
+```bash
+git rm -q appview/README.md && git commit -q -m TEMP
+nbb docs/verify-custody.cljs; echo "exit=$?"
+```
+
+今度は 3 つとも落ちる（ハッシュが動く）:
+
+```
+  FAIL 出所 tree（再構成 vs 記録）
+         got  844a68596b67ddd5f89ab5cbd86087ebbdc6a47a
+         want eb81e706783d12ada7937f8c73466b72c200813c
+  FAIL 保管ファイル数
+         got  37
+         want 38
+  FAIL 保管バイト数
+         got  65366
+         want 66613
+exit=1
+```
+
+```bash
+git reset -q --hard HEAD~1  # 戻すと exit=0
+```
+
+### 保管対象を `:allowed-additions` に紛れ込ませて迂回しようとする
+
+`migration.edn` の `:allowed-additions` に `"shared"` を足す —— つまり
+「`shared/` は追加物だから検査しなくてよい」と主張してみる。
+
+```
+SCANNED	34 保管ファイル / 3 検査
+  FAIL 出所 tree（再構成 vs 記録）
+         got  3d33e48d876846cc8280a08b60cd3073c611990b
+         want eb81e706783d12ada7937f8c73466b72c200813c
+  FAIL 保管ファイル数
+         got  34
+         want 38
+exit=1
+```
+
+**除外した分だけ再構成 tree から消えるので、迂回はハッシュを合わなくする方向にしか
+働かない。**検査対象を減らして通す、ができない。
+
+### 判定できない場合（PASS でも FAIL でもない）
+
+repo の外から呼ぶ:
+
+```bash
+cd /tmp && nbb /path/to/app-sre/docs/verify-custody.cljs; echo "exit=$?"
+```
+
+```
+UNDETERMINED: migration.edn が無い。この repo のルートで実行すること
+exit=3
+```
+
+**exit 3 は 0 でも 1 でもない。**git が無い・repo でない・記録が読めない・対象が
+0 件、はすべてここに落ちる。CI で拾うときは `exit != 0` を fail とし、3 を
+「合格」に丸めないこと。
 
 ---
 
