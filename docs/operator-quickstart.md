@@ -145,8 +145,7 @@ npm run build
 **exit 1。**
 
 ```
-✓ 130 modules transformed.
-✗ Build failed in 282ms
+✗ Build failed
 error during build:
 Could not resolve "./components/AietzhayyimProjectSreToolbar.svelte"
   from "../shared/sre-toolbar-ui/src/index.ts"
@@ -164,7 +163,6 @@ git archive HEAD | tar -x -C /tmp/sre-scratch
 `/tmp/sre-scratch` 側で import 名を直して再ビルドすると、**別の場所で落ちる**:
 
 ```
-✓ 138 modules transformed.
 [vite:esbuild] Transform failed with 1 error:
   .../shared/sre-toolbar-ui/src/mcp/client.ts:13:0: ERROR: Unexpected end of file
 ```
@@ -175,17 +173,20 @@ git archive HEAD | tar -x -C /tmp/sre-scratch
 `callMcpTool` に仮の本体を足すと、そこで初めて通る:
 
 ```
-✓ 141 modules transformed.
-dist/popup.html                          0.39 kB │ gzip:  0.27 kB
-dist/background.js                       0.20 kB │ gzip:  0.18 kB
-dist/content/inject.js                   0.31 kB │ gzip:  0.22 kB
-dist/popup.js                            4.05 kB │ gzip:  1.79 kB
-dist/content/toolbar.js                 13.68 kB │ gzip:  5.37 kB
-dist/chunks/custom-element-BT44i729.js  55.33 kB │ gzip: 20.33 kB
-✓ built in 428ms
+dist/popup.html
+dist/background.js
+dist/content/inject.js
+dist/popup.js
+dist/content/toolbar.js
+dist/chunks/custom-element-<hash>.js
 ```
 
 exit 0。**つまり保管対象への 2 箇所の編集が、ビルドが通る状態との差の全部である。**
+
+> ここでバイト数と module 数を引用していないのは、**再現しないからである。**
+> `extension/` に lockfile が無いので、数分あけた 2 回のインストールで module 数
+> （130 / 131）と `dist/content/toolbar.js` のサイズ（13.68 / 13.62 kB）が動いた。
+> 出力される**ファイルの集合**は 2 回とも同じだった。
 
 `dist/` に **CSS は 1 つも無い**が、`manifest.json` は `content/toolbar.css` を
 宣言している。加えて `manifest.json` のキーは camelCase なので、この `dist/` を
@@ -224,11 +225,11 @@ TARGET_URL=https://etzhayyim.com npx playwright test
 ```
   ✘  1 › page loads and returns 200
   ✘  3 › h1 is visible
-  ✓  5 › /health endpoint returns 200 (424ms)
+  ✓  5 › /health endpoint returns 200
   ✘  6 › meta description is present
   ✘  8 › no JS console errors on load
   4 failed
-  1 passed (8.0s)
+  1 passed
 ```
 
 落ちた 4 件はすべて同じ原因で、対象サイトの問題ではない:

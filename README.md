@@ -125,7 +125,7 @@ meta description / JS console error 0 件）を回して結果を戻す。Docker
 | `extension` の `npm test`（vitest） | exit 0 — 1 passed。ただし中身は `expect(true).toBe(true)` |
 | `extension` の `npm run build`（vite） | **exit 1** — 下記 ① |
 | ① を直して再ビルド | **exit 1** — 下記 ② |
-| ①② を直して再ビルド | **exit 0** — 141 modules、6 ファイル出力 |
+| ①② を直して再ビルド | **exit 0** — 6 ファイル出力 |
 | `runner` の `npm ci --ignore-scripts` | exit 0 — 24 packages |
 | `runner` の `npx ts-node run.ts` | **exit 1** — `ENOTFOUND sre.etzhayyim.com` |
 | `runner` の `npx playwright test`（`TARGET_URL=https://etzhayyim.com`） | exit 1 — 5 中 4 が「browser が無い」で落ち、`/health` の 1 件だけ通る |
@@ -185,6 +185,11 @@ export async function callMcpTool<T = unknown>(params: {
 - `runner/package.json` は `@playwright/test@^1.50.0` を指すが lockfile は 1.58.2 を
   固定する。`Dockerfile` は `v1.50.0-jammy` を基底にしつつ `package-lock.json` を
   COPY しないので、イメージ内では毎回別解決になる
+- **`extension/` には lockfile が無い**（lockfile を持つのは `runner/` だけ）。
+  実際、数分あけた 2 回のインストールでビルドの module 数（130 / 131）と
+  `dist/content/toolbar.js` のサイズ（13.68 / 13.62 kB）が動いた。**この repo の
+  ビルド出力は再現しない** —— だから本文にはビルドの module 数もバイト数も引用して
+  いない（出力される**ファイルの集合**は 2 回とも同じだった）
 
 ---
 
