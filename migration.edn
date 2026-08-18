@@ -1,1 +1,4 @@
-{:schema "etzhayyim.migration/v1" :source {:repository "etzhayyim/root" :revision "1316716c6b4bc3b1cba8c0188557b732ceffa054" :path "60-apps/etzhayyim-project-sre" :tree "eb81e706783d12ada7937f8c73466b72c200813c" :tracked-files 38 :bytes 66613} :destination {:repository "cloud-itonami/app-sre"} :identity {:allowed-additions ["README.edn" "migration.edn"]}}
+{:schema "etzhayyim.migration/v1"
+ :source {:repository "etzhayyim/root" :revision "1316716c6b4bc3b1cba8c0188557b732ceffa054" :path "60-apps/etzhayyim-project-sre" :tree "eb81e706783d12ada7937f8c73466b72c200813c" :tracked-files 38 :bytes 66613}
+ :destination {:repository "cloud-itonami/app-sre"}
+ :identity {:allowed-additions ["README.edn" "migration.edn" "README.md" "docs/operator-quickstart.md" "docs/verify-custody.cljs"]}}
