@@ -58,7 +58,7 @@ git ls-files | grep -v -E '^(README\.edn|migration\.edn|README\.md|docs/)' \
 ## 3. 保管を検査する（network 不要、数秒）
 
 ```bash
-nbb docs/verify-custody.cljs
+nbb docs/verify-custody.cljk
 ```
 
 ```
@@ -75,7 +75,7 @@ PASS — 保管対象 38 ファイルは出所と同一（--origin を付ける�
 出所 GitHub の実 tree とも突き合わせる（`gh` の認証が要る）:
 
 ```bash
-nbb docs/verify-custody.cljs --origin
+nbb docs/verify-custody.cljk --origin
 ```
 
 ```
@@ -258,7 +258,7 @@ npx playwright install chromium        # 約 150 MB のダウンロード
 
 ```bash
 printf '\n' >> NOTICE
-nbb docs/verify-custody.cljs; echo "exit=$?"
+nbb docs/verify-custody.cljk; echo "exit=$?"
 ```
 
 ```
@@ -282,7 +282,7 @@ git checkout -- NOTICE      # 戻すと exit=0
 
 ```bash
 git rm -q appview/README.md && git commit -q -m TEMP
-nbb docs/verify-custody.cljs; echo "exit=$?"
+nbb docs/verify-custody.cljk; echo "exit=$?"
 ```
 
 今度は 3 つとも落ちる（ハッシュが動く）:
@@ -328,7 +328,7 @@ exit=1
 repo の外から呼ぶ:
 
 ```bash
-cd /tmp && nbb /path/to/app-sre/docs/verify-custody.cljs; echo "exit=$?"
+cd /tmp && nbb /path/to/app-sre/docs/verify-custody.cljk; echo "exit=$?"
 ```
 
 ```
