@@ -196,8 +196,8 @@ export async function callMcpTool<T = unknown>(params: {
 ## 5. 保管を検査する
 
 ```bash
-nbb docs/verify-custody.cljk            # ローカルのみ（network 不要）
-nbb docs/verify-custody.cljk --origin   # 出所 GitHub の実 tree とも突き合わせる
+kbb --backend sci docs/verify-custody.cljk            # ローカルのみ（network 不要）
+kbb --backend sci docs/verify-custody.cljk --origin   # 出所 GitHub の実 tree とも突き合わせる
 ```
 
 `migration.edn` の `:identity :allowed-additions` に挙がった名前を除いた残りから
