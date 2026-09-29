@@ -348,7 +348,7 @@ exit=3
 |---|---|
 | 在庫と、文書が在ると言っていて実際は無いもの | `README.md` §1・§3 |
 | ビルドが壊れている 2 箇所の詳細 | `README.md` §4 |
-| 出所プロジェクト全体の設計（この repo の説明ではない） | `CLAUDE.md` / `DESIGN_SRE_TOOLBAR_MCP_INTEGRATION.md` |
+| 出所プロジェクト全体の設計（この repo の説明ではない） | `AGENTS.md` / `DESIGN_SRE_TOOLBAR_MCP_INTEGRATION.md` |
 | ツールバーの MCP 設計 | `DESIGN_SRE_TOOLBAR_MCP_INTEGRATION.md` |
 | Matrix issue room の運用と必須 env | `appview/README.md` |
 | 抽出の出所・リビジョン・許可された追加物 | `migration.edn` |

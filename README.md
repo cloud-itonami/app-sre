@@ -10,7 +10,7 @@
 
 読む前に知っておくべきことが 2 つある。
 
-1. **`CLAUDE.md` と `PROJECT.jsonld` が説明しているサーバ側は、この repo に 1 行も無い。**
+1. **`AGENTS.md` と `PROJECT.jsonld` が説明しているサーバ側は、この repo に 1 行も無い。**
    監視ロジック（`health_check_all` 等 9 method）も Go の MCP backend も
    ランディングページも、ここには入っていない（§3）。
 2. **クライアント側は、在るが**、`vite build` **が通らない。** 保管対象の中に
@@ -42,7 +42,7 @@
 | 区画 | 数 | バイト | 何か |
 |---|---|---|---|
 | `runner/` | 9 | 32,049 | Playwright smoke ランナー（+ 死んだデバッグ script 2 本 = 14,185 B） |
-| 根の文書 | 4 | 13,379 | `CLAUDE.md` `DESIGN_SRE_TOOLBAR_MCP_INTEGRATION.md` `NOTICE` `PROJECT.jsonld` |
+| 根の文書 | 4 | 13,379 | `AGENTS.md` `DESIGN_SRE_TOOLBAR_MCP_INTEGRATION.md` `NOTICE` `PROJECT.jsonld` |
 | `extension/` | 20 | 11,163 | Chrome MV3 拡張（Svelte 5 + Vite） |
 | `shared/sre-toolbar-ui/` | 4 | 8,775 | 拡張が `@sre-shared` として取り込む共有 UI + MCP client |
 | `appview/` | 1 | 1,247 | App 移行の配置メモ（README のみ） |
@@ -80,13 +80,13 @@ meta description / JS console error 0 件）を回して結果を戻す。Docker
 
 | 文書 | 在ると言っているもの | 実際 |
 |---|---|---|
-| `CLAUDE.md` | `wasm/etzhayyim-wasm-sre-job-srej0b1x/` — 9 method の SRE App 本体 | ディレクトリごと無い |
+| `AGENTS.md` | `wasm/etzhayyim-wasm-sre-job-srej0b1x/` — 9 method の SRE App 本体 | ディレクトリごと無い |
 | `PROJECT.jsonld` | `app/` — Go の MCP backend（port 8080） | 無い |
 | `PROJECT.jsonld` | `ui/` — `sre.etzhayyim.com` のランディングページ（SvelteKit SSG） | 無い |
 | `NOTICE` | `CHARTER-RIDER.md` | 無い |
 | `extension/buf.gen.yaml` | `src/lib/gen` へ protobuf/Connect を生成 | 生成物も `.proto` も `buf.yaml` も無い |
 
-したがって **`CLAUDE.md` の Architecture 図・method 表・Arrow テーブル表は、この repo に
+したがって **`AGENTS.md` の Architecture 図・method 表・Arrow テーブル表は、この repo に
 対する説明ではない。** 出所プロジェクト全体に対する説明である。
 
 **参照先ホストは解決しない**（2026-08-18 実測、`dig`）:
